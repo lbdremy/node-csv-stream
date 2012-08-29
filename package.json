@@ -1,0 +1,23 @@
+{
+  "name": "csv-stream",
+  "version": "0.0.0",
+  "description": "Simple CSV stream",
+  "main": "index.js",
+  "devDependencies" : {
+    "mocha" : "1.4.x",
+    "request" : "2.10.x"
+  },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lbdremy/node-csv-stream.git"
+  },
+  "keywords": [
+    "csv",
+    "stream"
+  ],
+  "author": "Remy Loubradou",
+  "license": "MIT"
+}
