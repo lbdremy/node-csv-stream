@@ -13,50 +13,62 @@ exports.createStream = function(options){
 function CSVStream(options){
 	var self = this;
 	Stream.call(this);
+
+	// States
 	this.writable = true;
 	this.readable = true;
-	// States
 	this._paused = false;
+	this._ended = false;
+	this._destroyed = false;
+
+	// Buffer
+	this._buffer = new Buffer(0);
+
+	// CSV parser
 	this._parser = new Parser(options);
 	this._parser.on('data',function(data){
+		if(self._ended) throw new Error('Must not emit data event after emittion of end event.')
 		self.emit('data',data);
 	});
 	this._parser.on('column',function(key,value){
 		self.emit('column',key,value);
 	});
 	this._parser.on('end',function(){
+		self._ended = true;
+		self.readable = false;
 		self.emit('end');
-	});
-	this._parser.on('error',function(err){
-		self.emit('error',err);
-	});
-	this._parser.on('close',function(){
-		self.emit('close');
 	});
 }
 
 util.inherits(CSVStream,Stream);
 
 CSVStream.prototype.write = function(buffer,encoding){
+	if(this._ended) throw new Error('Cannot write after end has been called.');
+	if(buffer) this._buffer = Buffer.concat([this._buffer, buffer], this._buffer.length + buffer.length);
 	if(this._paused) return false;
-	return this._parser.write(buffer,encoding);
+	this._parser.parse(this._buffer.toString(encoding));
+	this._buffer = new Buffer(0);
+	return true;
 }
 
 CSVStream.prototype.end = function(buffer,encoding){
-	this._parser.end(buffer,encoding);
+	if(this._buffer || buffer) this.write(buffer,encoding);
+	this.writable = false;
+	this._parser.end();
+	if(!this._destroyed) this.destroy(); 
 }
 
 CSVStream.prototype.destroy = function(){
-	this._parser.destroy();
+	this._buffer = null;
+	this._destroyed = true;
+	this.emit('close');
 }
 
 CSVStream.prototype.pause = function(){
 	this._paused = true;
-	this._parser.pause();
 }
 
 CSVStream.prototype.resume = function(){
 	this._paused = false;
-	this._parser.resume();
-	self.emit('drain');
+	this.emit('drain');
 }
