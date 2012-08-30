@@ -40,7 +40,7 @@ CSVStream.prototype.write = function(buffer,encoding){
 }
 
 CSVStream.prototype.end = function(buffer,encoding){
-	if(buffer) this._parser.end(buffer.toString(encoding));
+	if(buffer) this._parser.end(buffer,encoding);
 	this.emit('end');
 }
 
