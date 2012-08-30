@@ -10,7 +10,7 @@
     "stream-tester" : "0.0.x"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "node test/stream-spec.js"
   },
   "repository": {
     "type": "git",
