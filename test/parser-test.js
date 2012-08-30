@@ -4,7 +4,8 @@
 
 var mocha = require('mocha'),
 	assert = require('chai').assert,
-	Parser = require('./../lib/parser');
+	libPath = process.env['CSV_STREAM_COV'] ? '../lib-cov' : '../lib';
+	Parser = require( libPath + '/parser');
 
 var csvText = 'id,title,description\n'
 			+ '1,title1,description1\n'
@@ -125,7 +126,7 @@ describe('Parser',function(){
 			parser.parse(csvText);
 			parser.end();
 		});
-		it('should emit `column` events with the right data witht the specified columns',function(done){
+		it('should emit `column` events with the right data with the specified columns',function(done){
 			var parser = new Parser({ columns : ['cID','cTitle','cDescription']});
 			var count = 0;
 			parser.on('column',function(key,value){
