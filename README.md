@@ -1,5 +1,7 @@
 # csv-stream - Simple CSV stream for node.js
 
+[![](https://secure.travis-ci.org/lbdremy/node-csv-stream.png)](http://travis-ci.org/#!/lbdremy/node-csv-stream)
+
 ##Notice
 
 Not ready yet!
