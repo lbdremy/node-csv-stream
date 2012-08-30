@@ -30,6 +30,9 @@ function CSVStream(options){
 	this._parser.on('error',function(err){
 		self.emit('error',err);
 	});
+	this._parser.on('close',function(){
+		self.emit('close');
+	});
 }
 
 util.inherits(CSVStream,Stream);
@@ -40,13 +43,11 @@ CSVStream.prototype.write = function(buffer,encoding){
 }
 
 CSVStream.prototype.end = function(buffer,encoding){
-	if(buffer) this._parser.end(buffer,encoding);
-	this.emit('end');
+	this._parser.end(buffer,encoding);
 }
 
 CSVStream.prototype.destroy = function(){
 	this._parser.destroy();
-	this.emit('close');
 }
 
 CSVStream.prototype.pause = function(){
