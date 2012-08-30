@@ -20,9 +20,11 @@ function CSVStream(options){
 	this._paused = false;
 	this._ended = false;
 	this._destroyed = false;
+	this._endCallWhenPause = false;
 
 	// Buffer
 	this._buffer = new Buffer(0);
+	this._encoding = '';
 
 	// CSV parser
 	this._parser = new Parser(options);
@@ -43,19 +45,25 @@ function CSVStream(options){
 util.inherits(CSVStream,Stream);
 
 CSVStream.prototype.write = function(buffer,encoding){
+	this._encoding = encoding || this._encoding;
 	if(this._ended) throw new Error('Cannot write after end has been called.');
 	if(buffer) this._buffer = Buffer.concat([this._buffer, buffer], this._buffer.length + buffer.length);
 	if(this._paused) return false;
-	this._parser.parse(this._buffer.toString(encoding));
+	this._parser.parse(this._buffer.toString(this._encoding));
 	this._buffer = new Buffer(0);
 	return !this._paused;
 }
 
 CSVStream.prototype.end = function(buffer,encoding){
-	if(this._buffer || buffer) this.write(buffer,encoding)
-	this.writable = false;
-	this._parser.end();
-	if(!this._destroyed) this.destroy();
+	if(this._buffer || buffer){
+		if(this.write(buffer,encoding)){
+			this.writable = false;
+			this._parser.end();
+			if(!this._destroyed) this.destroy();
+		}else{
+			this._endCallWhenPause = true;
+		}
+	} 
 }
 
 CSVStream.prototype.destroy = function(){
@@ -70,6 +78,7 @@ CSVStream.prototype.pause = function(){
 
 CSVStream.prototype.resume = function(){
 	this._paused = false;
-	if(this._buffer.length > 0) this.write();
+	if(this._buffer.length > 0 && !this._endCallWhenPause) this.write();
+	if(this._endCallWhenPause) this.end();
 	this.emit('drain');
 }
