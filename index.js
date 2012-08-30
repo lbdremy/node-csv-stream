@@ -48,14 +48,14 @@ CSVStream.prototype.write = function(buffer,encoding){
 	if(this._paused) return false;
 	this._parser.parse(this._buffer.toString(encoding));
 	this._buffer = new Buffer(0);
-	return !paused;
+	return !this._paused;
 }
 
 CSVStream.prototype.end = function(buffer,encoding){
-	if(this._buffer || buffer) this.write(buffer,encoding);
+	if(this._buffer || buffer) this.write(buffer,encoding)
 	this.writable = false;
 	this._parser.end();
-	if(!this._destroyed) this.destroy(); 
+	if(!this._destroyed) this.destroy();
 }
 
 CSVStream.prototype.destroy = function(){
