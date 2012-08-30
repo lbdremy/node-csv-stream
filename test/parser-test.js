@@ -76,6 +76,26 @@ describe('Parser',function(){
 			parser.parse(csvText);
 			parser.end();
 		});
+		it('should emit `column` events with the right data',function(done){
+			var parser = new Parser();
+			var count = 0;
+			parser.on('column',function(key,value){
+				var pair = key + '=' + value;
+				if(count === 0) assert.equal(pair,'id=1');
+				if(count === 1) assert.equal(pair,'title=title1');
+				if(count === 2) assert.equal(pair,'description=description1');
+				if(count === 3) assert.equal(pair,'id=2');
+				if(count === 4) assert.equal(pair,'title=title2');
+				if(count === 5) assert.equal(pair,'description=description2');
+				count++;
+			});
+			parser.on('end',function(){
+				assert.equal(count,6);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		})
 	});
 })
 
