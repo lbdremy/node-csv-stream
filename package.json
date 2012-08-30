@@ -7,10 +7,11 @@
     "mocha" : "1.4.x",
     "request" : "2.10.x",
     "stream-spec" : "0.3.x",
-    "stream-tester" : "0.0.x"
+    "stream-tester" : "0.0.x",
+    "chai" : "1.2.x"
   },
   "scripts": {
-    "test": "node test/stream-spec.js"
+    "test": "./node_modules/mocha/bin/mocha -R spec test/*-test.js && node test/stream-spec.js"
   },
   "repository": {
     "type": "git",
