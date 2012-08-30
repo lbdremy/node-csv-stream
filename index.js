@@ -48,7 +48,7 @@ CSVStream.prototype.write = function(buffer,encoding){
 	if(this._paused) return false;
 	this._parser.parse(this._buffer.toString(encoding));
 	this._buffer = new Buffer(0);
-	return true;
+	return !paused;
 }
 
 CSVStream.prototype.end = function(buffer,encoding){
