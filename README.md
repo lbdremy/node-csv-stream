@@ -2,9 +2,11 @@
 
 [![](https://secure.travis-ci.org/lbdremy/node-csv-stream.png)](http://travis-ci.org/#!/lbdremy/node-csv-stream)
 
-##Notice
+## Install
 
-Not ready yet!
+```sh
+npm install csv-stream
+```
 
 ## Usage
 
@@ -32,3 +34,21 @@ request('http://mycsv.com/file.csv').pipe(csvStream)
 		console.log('#' + key ' = ' + value);
 	})
 ```
+
+## Test
+
+```sh
+npm test
+```
+
+## TODOs
+
+* Support field enclosed in double quotes (or given character used to enclosed a field)
+* Support escape character
+
+## Contributions
+
+Feel free to post issues and pull requests, more than welcome you are ;).
+
+## Licence
+(The MIT License) Copyright 2012 HipSnip Limited
