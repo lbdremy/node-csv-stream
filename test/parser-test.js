@@ -149,6 +149,25 @@ describe('Parser',function(){
 			parser.parse(csvText);
 			parser.end();
 		});
+		it('should emit all `data` events with the right data if the last line doesn\'t have `endLine` character.',function(done){
+			var csvText = 'id,title,description\n'
+							+ '1,title1,description1\n'
+							+ '2,title2,description2';
+			var parser = new Parser();
+			var length = 0;
+			parser.on('data',function(data){
+				assert.isObject(data);
+				if(length === 0) assert.deepEqual(data, {id : '1', title : 'title1', description : 'description1'});
+				if(length === 1) assert.deepEqual(data, {id : '2', title : 'title2', description : 'description2'});
+				length++;
+			});
+			parser.on('end',function(){
+				assert.equal(length,2);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
 	});
 })
 
