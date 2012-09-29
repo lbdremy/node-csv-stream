@@ -14,10 +14,13 @@ npm install csv-stream
 var csv = require('csv-stream'),
 var request = require('request');
 
+// All of these arguments are optional.
 var options = {
 	delimiter : '\t', // default is ,
 	endLine : '\n', // default is \n,
 	columns : ['columnName1', 'columnName2'] // by default read the first line and use values found as columns 
+	escapeChar : '"', // default is an empty string
+	enclosedChar : '"' // default is an empty string
 }
 
 var csvStream = csv.createStream(options);
@@ -26,11 +29,11 @@ request('http://mycsv.com/file.csv').pipe(csvStream)
 		console.error(err);
 	})
 	.on('data',function(data){
-		// Output line by line
+		// outputs an object containing a set of key/value pair representing a line found in the csv file.
 		console.log(data);
 	})
 	.on('column',function(key,value){
-		// Output the column name associates with the value found
+		// outputs the column name associated with the value found
 		console.log('#' + key ' = ' + value);
 	})
 ```
@@ -40,11 +43,6 @@ request('http://mycsv.com/file.csv').pipe(csvStream)
 ```sh
 npm test
 ```
-
-## TODOs
-
-* Support field enclosed in double quotes (or given character used to enclosed a field)
-* Support escape character
 
 ## Contributions
 
