@@ -168,6 +168,79 @@ describe('Parser',function(){
 			parser.parse(csvText);
 			parser.end();
 		});
+		it('should emit all `data` events with the right data considering the use of the enclosed character',function(done){
+			var csvText = '"id","title","description"\n'
+							+ '"1","promothee,1","spaceship\n1"\n'
+							+ '"2","asgards,2","alien\n2"\n';
+			var parser = new Parser({
+				enclosedChar : '"',
+				delimiter : ',',
+				endLine : '\n'
+			});
+			var length = 0;
+			parser.on('data',function(data){
+				assert.isObject(data);
+				if(length === 0) assert.deepEqual(data, {id : '1', title : 'promothee,1', description : 'spaceship\n1'});
+				if(length === 1) assert.deepEqual(data, {id : '2', title : 'asgards,2', description : 'alien\n2'});
+				length++;
+			});
+			parser.on('end',function(){
+				assert.equal(length,2);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
+		it('should emit all `data` events with the right data considering the escape character "',function(done){
+			var csvText = '"id","title","description"\n'
+							+ '"1","title with ""quote"", 1","description ""quote""\n 1"\n'
+							+ '"2","title with ""quote"", 2","description ""quote""\n 2"\n';
+			// Only the enclosed char needs to be escaped, others specials characters
+			// like the delimiter or the endLine character are not considered as specials
+			// if there are between enclosed chars. 
+			var parser = new Parser({
+				enclosedChar : '"',
+				escapeChar : '"'
+			});
+			var length = 0;
+			parser.on('data',function(data){
+				assert.isObject(data);
+				if(length === 0) assert.deepEqual(data, {id : '1', title : 'title with "quote", 1', description : 'description "quote"\n 1'});
+				if(length === 1) assert.deepEqual(data, {id : '2', title : 'title with "quote", 2', description : 'description "quote"\n 2'});
+				length++;
+			});
+			parser.on('end',function(){
+				assert.equal(length,2);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
+		it('should emit all `data` events with the right data considering the escape character \\',function(done){
+			var csvText = '"id","title","description"\n'
+							+ '"1","title with \\"quote\\", 1","description \\"quote\\"\n 1"\n'
+							+ '"2","title with \\"quote\\", 2","description \\"quote\\"\n 2"\n';
+			// Only the enclosed char needs to be escaped, others specials characters
+			// like the delimiter or the endLine character are not considered as specials
+			// if there are between enclosed chars. 
+			var parser = new Parser({
+				enclosedChar : '"',
+				escapeChar : '\\'
+			});
+			var length = 0;
+			parser.on('data',function(data){
+				assert.isObject(data);
+				if(length === 0) assert.deepEqual(data, {id : '1', title : 'title with "quote", 1', description : 'description "quote"\n 1'});
+				if(length === 1) assert.deepEqual(data, {id : '2', title : 'title with "quote", 2', description : 'description "quote"\n 2'});
+				length++;
+			});
+			parser.on('end',function(){
+				assert.equal(length,2);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
 	});
 })
 
