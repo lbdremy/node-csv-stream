@@ -8,22 +8,26 @@ var Parser = require('./../lib/parser');
  * Benchmark
  */
 
-var NOF_RUNS = 5000;
-
+var NOF_BYTES = Math.pow(10,7); // 10M
 var sample = getSample();
-var start = new Date();
-for(var i = 0; i < NOF_RUNS; i++){
+var length = new Buffer(sample).length;
+
+while(true){
+	var runs = 0;
+	var start = new Date();
 	var parser = createParser();
-	parser.parse(sample);
+	for(var i = 0; i < NOF_BYTES; i += length){
+		parser.parse(sample);
+		runs++;
+	}
 	parser.end();
+	var end = new Date();
+
+	var timeSpent = end - start;
+	var totalBytes = length * runs;
+	console.log(timeSpent + ' ms');
+	console.log(totalBytes/timeSpent + ' bytes/ms');
 }
-var end = new Date();
-
-var timeSpent = end - start;
-var totalBytes = sample.length * NOF_RUNS;
-console.log(timeSpent + ' ms');
-console.log(totalBytes/timeSpent + ' bytes/ms');
-
 
 /**
  * Helpers
@@ -31,7 +35,7 @@ console.log(totalBytes/timeSpent + ' bytes/ms');
 
 function createParser(){
 	var options = {
-		delimiter : ';'
+		delimiter : '\t'
 	}
 	var parser = new Parser(options);
 	return parser;
