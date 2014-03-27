@@ -34,7 +34,7 @@ request('http://mycsv.com/file.csv').pipe(csvStream)
 	})
 	.on('column',function(key,value){
 		// outputs the column name associated with the value found
-		console.log('#' + key ' = ' + value);
+		console.log('#' + key + ' = ' + value);
 	})
 ```
 
