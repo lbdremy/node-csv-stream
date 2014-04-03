@@ -17,7 +17,7 @@ var request = require('request');
 // All of these arguments are optional.
 var options = {
 	delimiter : '\t', // default is ,
-	endLine : '\n', // default is \n,
+	endLine : '\n', // default is \n; an array of characters can be used to support multiple line endings ['\n', '\r'],,
 	columns : ['columnName1', 'columnName2'] // by default read the first line and use values found as columns 
 	escapeChar : '"', // default is an empty string
 	enclosedChar : '"' // default is an empty string
