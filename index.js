@@ -85,7 +85,7 @@ CSVStream.prototype.pause = function(){
 
 CSVStream.prototype.resume = function(){
 	this._paused = false;
-	if(this._buffer.length > 0 && !this._endCallWhenPause) this.write();
+	if(this._buffer && this._buffer.length > 0 && !this._endCallWhenPause) this.write();
 	if(this._endCallWhenPause) this.end();
 	this.emit('drain');
 }
