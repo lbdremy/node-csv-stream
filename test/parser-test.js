@@ -242,48 +242,48 @@ describe('Parser',function(){
 			parser.end();
 		});
 		describe('with offset column names',function(done){
-      var offsetCsvText = 'ElaborateTableTitle\n'
-            + '\n'
-            + 'id,title,description\n'
-            + '1,title1,description1\n'
-            + '2,title2,description2\n';
-      it('should emit `data` events with the right data',function(done){
-        var parser = new Parser({ columnOffset: 2 });
-        var length = 0;
-        parser.on('data',function(data){
-          assert.isObject(data);
-          if(length === 0) assert.deepEqual(data, {id : '1', title : 'title1', description : 'description1'});
-          if(length === 1) assert.deepEqual(data, {id : '2', title : 'title2', description : 'description2'});
-          length++;
-        });
-        parser.on('end',function(){
-          assert.equal(length,2);
-          done();
-        });
-        parser.parse(offsetCsvText);
-        parser.end();
-      });
-      it('should emit `column` events with the right data',function(done){
-        var parser = new Parser({ columnOffset: 2 });
-        var count = 0;
-        parser.on('column',function(key,value){
-          var pair = key + '=' + value;
-          if(count === 0) assert.equal(pair,'id=1');
-          if(count === 1) assert.equal(pair,'title=title1');
-          if(count === 2) assert.equal(pair,'description=description1');
-          if(count === 3) assert.equal(pair,'id=2');
-          if(count === 4) assert.equal(pair,'title=title2');
-          if(count === 5) assert.equal(pair,'description=description2');
-          count++;
-        });
-        parser.on('end',function(){
-          assert.equal(count,6);
-          done();
-        });
-        parser.parse(offsetCsvText);
-        parser.end();
-      });
-    });
+			var offsetCsvText = 'ElaborateTableTitle\n'
+						+ '\n'
+						+ 'id,title,description\n'
+						+ '1,title1,description1\n'
+						+ '2,title2,description2\n';
+			it('should emit `data` events with the right data',function(done){
+				var parser = new Parser({ columnOffset: 2 });
+				var length = 0;
+				parser.on('data',function(data){
+					assert.isObject(data);
+					if(length === 0) assert.deepEqual(data, {id : '1', title : 'title1', description : 'description1'});
+					if(length === 1) assert.deepEqual(data, {id : '2', title : 'title2', description : 'description2'});
+					length++;
+				});
+				parser.on('end',function(){
+					assert.equal(length,2);
+					done();
+				});
+				parser.parse(offsetCsvText);
+				parser.end();
+			});
+			it('should emit `column` events with the right data',function(done){
+				var parser = new Parser({ columnOffset: 2 });
+				var count = 0;
+				parser.on('column',function(key,value){
+					var pair = key + '=' + value;
+					if(count === 0) assert.equal(pair,'id=1');
+					if(count === 1) assert.equal(pair,'title=title1');
+					if(count === 2) assert.equal(pair,'description=description1');
+					if(count === 3) assert.equal(pair,'id=2');
+					if(count === 4) assert.equal(pair,'title=title2');
+					if(count === 5) assert.equal(pair,'description=description2');
+					count++;
+				});
+				parser.on('end',function(){
+					assert.equal(count,6);
+					done();
+				});
+				parser.parse(offsetCsvText);
+				parser.end();
+			});
+		});
 	});
 })
 
