@@ -22,12 +22,12 @@ describe('Parser',function(){
 			assert.equal(parser.delimiter,'~');
 		});
 		it('should use \\n to notice the end of line by default',function(){
-			var parser = new Parser();
-			assert.equal(parser.endLine,'\n');
-		});
+			var parser = new Parser();			
+			assert.equal(parser.endLine.pop(),'\n');
+		});		
 		it('should use \\r  to notice the end of a line if specified',function(){
 			var parser = new Parser({endLine : '\r'});
-			assert.equal(parser.endLine,'\r');
+			assert.equal(parser.endLine.pop(),'\r');
 		});
 		it('should use no default columns by default',function(){
 			var parser = new Parser();
@@ -190,6 +190,32 @@ describe('Parser',function(){
 			});
 			parser.parse(csvText);
 			parser.end();
+		});
+		it('should emit all `data` events with the right data considering the use of the enclosed character array', function(done){
+		  
+		  //mixed line endings probably not going to be seen in a file, but demonstrates feature
+		  var csvText = '"id","title","description"\n'
+		                + '"1","promothee,1","spaceship\n1"\r'
+		                + '"2","asgards,2","alien\n2"\n';
+		  
+		  var parser = new Parser({
+		    enclosedChar : '"',
+        delimiter : ',',
+        endLine : ['\n', '\r']
+		  });
+		  var length = 0;
+		  parser.on('data',function(data){
+        assert.isObject(data);
+        if(length === 0) assert.deepEqual(data, {id : '1', title : 'promothee,1', description : 'spaceship\n1'});
+        if(length === 1) assert.deepEqual(data, {id : '2', title : 'asgards,2', description : 'alien\n2'});
+        length++;
+      });
+      parser.on('end',function(){
+        assert.equal(length,2);
+        done();
+      });
+      parser.parse(csvText);
+      parser.end();		  
 		});
 		it('should emit all `data` events with the right data considering the escape character "',function(done){
 			var csvText = '"id","title","description"\n'
