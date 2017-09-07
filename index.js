@@ -31,7 +31,7 @@ function CSVStream(options){
 
 	// Buffer
 	this._buffer = new Buffer(0);
-	this._encoding = '';
+	this._encoding = undefined;
 
 	// CSV parser
 	this._parser = new Parser(options);
