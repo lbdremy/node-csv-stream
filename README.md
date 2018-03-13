@@ -18,7 +18,7 @@ var request = require('request');
 var options = {
 	delimiter : '\t', // default is ,
 	endLine : '\n', // default is \n,
-	columns : ['columnName1', 'columnName2'], // by default read the first line and use values found as columns 
+	columns : ['columnName1', 'columnName2'], // by default read the first line and use values found as columns
 	columnOffset : 2, // default is 0
 	escapeChar : '"', // default is an empty string
 	enclosedChar : '"' // default is an empty string
@@ -28,6 +28,9 @@ var csvStream = csv.createStream(options);
 request('http://mycsv.com/file.csv').pipe(csvStream)
 	.on('error',function(err){
 		console.error(err);
+	})
+	.on('header', function(columns) {
+		console.log(columns);
 	})
 	.on('data',function(data){
 		// outputs an object containing a set of key/value pair representing a line found in the csv file.
