@@ -42,6 +42,9 @@ function CSVStream(options){
 	this._parser.on('column',function(key,value){
 		self.emit('column',key,value);
 	});
+	this._parser.on('header',function(header){
+		self.emit('header',header);
+	});
 	this._parser.on('end',function(){
 		self._ended = true;
 		self.readable = false;
@@ -70,7 +73,7 @@ CSVStream.prototype.end = function(buffer,encoding){
 		}else{
 			this._endCallWhenPause = true;
 		}
-	} 
+	}
 }
 
 CSVStream.prototype.destroy = function(){

@@ -197,7 +197,7 @@ describe('Parser',function(){
 							+ '"2","title with ""quote"", 2","description ""quote""\n 2"\n';
 			// Only the enclosed char needs to be escaped, others specials characters
 			// like the delimiter or the endLine character are not considered as specials
-			// if there are between enclosed chars. 
+			// if there are between enclosed chars.
 			var parser = new Parser({
 				enclosedChar : '"',
 				escapeChar : '"'
@@ -222,7 +222,7 @@ describe('Parser',function(){
 							+ '"2","title with \\"quote\\", 2","description \\"quote\\"\n 2"\n';
 			// Only the enclosed char needs to be escaped, others specials characters
 			// like the delimiter or the endLine character are not considered as specials
-			// if there are between enclosed chars. 
+			// if there are between enclosed chars.
 			var parser = new Parser({
 				enclosedChar : '"',
 				escapeChar : '\\'
@@ -236,6 +236,51 @@ describe('Parser',function(){
 			});
 			parser.on('end',function(){
 				assert.equal(length,2);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
+		it('should emit `header` event',function(done){
+			var parser = new Parser();
+			var countHeaderEvents = 0;
+			parser.on('header',function(data){
+				countHeaderEvents++;
+				assert.isArray(data);
+			});
+			parser.on('end',function(){
+				assert.equal(countHeaderEvents, 1);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
+		it('should emit `header` event with the right data',function(done){
+			var parser = new Parser();
+			var countHeaderEvents = 0;
+			parser.on('header',function(data){
+				countHeaderEvents++;
+				assert.isArray(data);
+				assert.equal(data[0],'id');
+				assert.equal(data[1],'title');
+				assert.equal(data[2],'description');
+			});
+			parser.on('end',function(){
+				assert.equal(countHeaderEvents, 1);
+				done();
+			});
+			parser.parse(csvText);
+			parser.end();
+		});
+		it('should not emit `header` event when there is any specified column',function(done){
+			var parser = new Parser({ columns : ['cID','cTitle','cDescription']});
+			var countHeaderEvents = 0;
+			parser.on('header',function(data){
+				countHeaderEvents++;
+				assert.isArray(data);
+			});
+			parser.on('end',function(){
+				assert.equal(countHeaderEvents, 0);
 				done();
 			});
 			parser.parse(csvText);
@@ -286,5 +331,3 @@ describe('Parser',function(){
 		});
 	});
 })
-
-
