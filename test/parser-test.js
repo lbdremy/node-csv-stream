@@ -286,6 +286,19 @@ describe('Parser',function(){
 			parser.parse(csvText);
 			parser.end();
 		});
+		it('should handle escape and enclose characters split accross separate chunks',function(done){
+			var parser = new Parser({ columns: ['value'], escapeChar : '"', enclosedChar : '"'});
+			parser.on('data',function(data){
+				assert.isObject(data);
+				assert.equal(data.value, '..."quoted"');
+			});
+			parser.on('end',function(){
+				done();
+			});
+			parser.parse('"..."');
+			parser.parse('"quoted"""');
+			parser.end();
+		});		
 		describe('with offset column names',function(done){
 			var offsetCsvText = 'ElaborateTableTitle\n'
 						+ '\n'
