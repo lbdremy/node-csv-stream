@@ -8,7 +8,8 @@
     "request": "2.10.x",
     "stream-spec": "0.3.x",
     "stream-tester": "0.0.x",
-    "chai": "1.2.x"
+    "chai": "1.2.x",
+    "typescript": "4.8.4"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha -R spec test/*-test.js && node test/stream-spec.js"

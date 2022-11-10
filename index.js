@@ -9,12 +9,18 @@
  * Modules dependencies
  */
 
-var Stream = require('stream'),
-	util = require('util'),
-	Parser = require('./lib/parser');
+import Stream from 'stream';
+import util from 'util'
+import Parser from './lib/parser'
 
-exports.createStream = function(options){
+export function createStream(options) {
 	return new CSVStream(options || {});
+}
+
+class CSVStream extends Stream {
+	constructor(options) {
+		
+	}
 }
 
 function CSVStream(options){
